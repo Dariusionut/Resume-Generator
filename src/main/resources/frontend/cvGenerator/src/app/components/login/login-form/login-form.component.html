@@ -1,0 +1,33 @@
+<div *ngIf="redirectMsg"
+     class="redirect_msg bg-info bg-opacity-25 p-sm-1 ">
+  <div class="">
+    <h3 class="text-success" [innerHTML]="redirectMsg"></h3>
+  </div>
+</div>
+
+<form action="" class="shadow-lg p-sm-3">
+
+  <div [classList]="'mb-sm-3'">
+    <label for="username" [classList]="'form-label'">Username:</label>
+    <input #username type="text" id="username" [classList]="'form-control'" name="username" placeholder="Username">
+  </div>
+
+  <div [classList]="'mb-sm-3'">
+    <label for="password" [classList]="'form-label'">Password:</label>
+    <input #password type="password" [classList]="'form-control'" id="password" name="password" placeholder="Password">
+  </div>
+  <hr>
+
+  <div class="col text-center">
+    <button type="button"
+            [class]="'btn btn-primary'"
+            (click)="login()"
+    >Login
+    </button>
+  </div>
+
+  <div class="col">
+    <p class="text-center"><a routerLink="/new-account">Create new account</a></p>
+  </div>
+  <p *ngIf="showMsg">{{message}}</p>
+</form>

@@ -1,0 +1,166 @@
+<section class="mb-sm-3">
+
+  <div *ngIf="showTable">
+    <div class="row">
+      <div class="col-sm-12">
+        <h3>User list</h3>
+      </div>
+    </div>
+    <div *ngIf="redirectMsg"
+         class="row">
+      <div class="col-sm-12">
+        <h4 class="text-success">{{redirectMsg}}</h4>
+      </div>
+    </div>
+  </div>
+  <hr *ngIf="showTable">
+  <div class="row mb-sm-2">
+    <div class="col">
+      <div class="btn-toolbar justify-content-between">
+        <div class="btn-group shadow-lg">
+          <button *ngIf="showTable"
+                  class="btn btn-primary rounded-3 me-sm-1"
+                  [routerLink]="'/user/user-form'"
+                  title="Add new user">
+            <i class="fas fa-plus"></i>
+          </button>
+          <button *ngIf="showTable"
+                  type="button"
+                  class="btn btn-primary rounded-3 me-sm-1"
+                  (click)="toggleFilters()"
+                  title="Show filters"
+                  [innerText]="showFilters ? 'Hide filters' : 'Show filters'">
+          </button>
+
+        </div>
+        <div class="btn-group shadow-lg">
+          <button class="btn btn-primary rounded-3 me-sm-1"
+                  (click)="toggleTable()"
+                  [title]="showTable ? 'Hide table' : 'Show table'"
+          >
+            {{showTable ? 'Hide' : 'Show users'}}</button>
+          <button *ngIf="showTable" class="btn btn-primary rounded-3"
+                  (click)="toggleTableActions()"
+                  [title]="showTableActions ? 'Show actions' : 'Hide actions'"
+
+          >
+            {{showTableActions ? 'Hide actions' : 'Show actions'}}</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <app-user-filter *ngIf="showFilters"
+                   (filterParams)="filterUsers($event)"
+                   (userObs)="resetFilters($event)"
+  >
+  </app-user-filter>
+  <div class="table-responsive-lg"
+       id="tableContainer"
+       [@showTable]="showTable ? 'open' : 'closed'">
+    <table class="table table-hover table-striped table-bordered rounded shadow-lg text-center"
+           id="userTable"
+    >
+      <caption class="opacity-75 ">User list</caption>
+      <thead class="table-dark">
+      <tr>
+        <th class="p-sm-2">#</th>
+        <th (click)="changePageRecords({order: 'u.first_name'})"
+            appMouseOver
+            class="p-sm-2 cursor_pointer">First name
+        </th>
+        <th (click)="changePageRecords({order: 'u.last_name'})"
+            appMouseOver
+            class="p-sm-2 cursor_pointer">Last name
+        </th>
+        <th (click)="changePageRecords({order: 'u.username'})"
+            appMouseOver
+            class="p-sm-2 cursor_pointer">Username
+        </th>
+        <th (click)="changePageRecords({order: 'u.email'})"
+            appMouseOver
+            class="p-sm-2 cursor_pointer">Email
+        </th>
+        <th (click)="changePageRecords({order: 'r.role_name'})"
+            appMouseOver
+            class="p-sm-2 cursor_pointer">Role
+        </th>
+        <th (click)="changePageRecords({order: 'u.dob'})"
+            appMouseOver
+            class="p-sm-2 cursor_pointer">Age
+        </th>
+        <th (click)="changePageRecords({order: 'g.gender_name'})"
+            appMouseOver
+            class="p-sm-2 cursor_pointer">Gender
+        </th>
+        <th (click)="changePageRecords({order: 'u.date_added'})"
+            appMouseOver
+            class="p-sm-2 cursor_pointer">Date added
+        </th>
+        <th class="p-sm-2 cursor_pointer"
+            appMouseOver
+            (click)="changePageRecords({order: 'u.is_enabled'})">
+          Enabled
+        </th>
+        <th *ngIf="showTableActions" class="p-sm-2">Actions</th>
+      </tr>
+      </thead>
+      <tbody class="table-info">
+      <tr *ngFor="let user of userObj?.list; let index = index;">
+        <td class="p-sm-2">{{(index + 1)}}</td>
+        <td class="p-sm-2 text-capitalize">{{user.userDetails.firstName}}</td>
+        <td class="p-sm-2 text-capitalize">{{user.userDetails.lastName}}</td>
+        <td class="p-sm-2">{{user.userSecurity.username}}</td>
+        <td class="p-sm-2">{{user.userSecurity.email}}</td>
+        <td class="p-sm-2 text-capitalize">
+          <span *ngFor="let role of user.userSecurity.roles">
+            {{role.roleName === 'ROLE_ADMIN' ? 'Admin' : role.roleName === 'ROLE_USER' ? 'User' : ''}}
+          </span>
+        </td>
+        <td class="p-sm-2">{{user.userDetails.age ? user.userDetails.age + ' years' : 'Unknown'}}</td>
+        <td class="p-sm-2 text-capitalize">{{user.userDetails.gender.genderName === 'Male' ? 'M' : 'F'}}</td>
+        <td class="p-sm-2">
+          <time [dateTime]="user.dateAdded">{{user.dateAdded | date: 'short'}}</time>
+        </td>
+        <td class="p-sm-2" [innerText]="user.userSecurity.isEnabled ? 'Yes' : 'No'"></td>
+        <td *ngIf="showTableActions"
+            class="p-sm-2 text-center">
+          <input type="hidden" [value]="user.id" #userId>
+          <button class="btn btn-primary me-sm-1"
+                  [custom-directive]="'brown'"
+                  userId="{{userId.value}}"
+                  title="View {{user.userSecurity.username}}">
+            <i class="fas fa-eye"></i>
+          </button>
+
+          <button class="btn btn-success me-sm-1"
+                  title="Edit {{user.userSecurity.username}}"
+                  (click)="viewEditForm(userId.value)">
+            <i class="fas fa-edit"></i></button>
+
+          <button class="btn btn-danger me-sm-1"
+                  title="{{user.userSecurity.isEnabled ? 'Disable' : 'Enable'}} {{user.userSecurity.username}}"
+                  (click)="toggleUserEnabled(userId.value)">
+            <i class="{{user.userSecurity.isEnabled ? 'fa-solid fa-lock' : 'fa-solid fa-lock-open'}}"></i>
+          </button>
+
+          <button class="btn btn-danger"
+                  title="Delete {{user.userSecurity.username}}"
+                  (click)="deleteUser(userId.value)">
+            <i class="fas fa-trash"></i>
+          </button>
+        </td>
+      </tr>
+      </tbody>
+
+    </table>
+
+    <app-pagination [data_object]="userObj"
+                    (pageEvent)="changePageRecords($event)">
+    </app-pagination>
+
+  </div>
+</section>
+
+
