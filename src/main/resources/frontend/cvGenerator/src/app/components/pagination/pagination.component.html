@@ -1,0 +1,79 @@
+<div class="row justify-content-between">
+  <div class="col-sm-6">
+    <div class="row">
+      <div class="col-sm-6">
+        <select #records (change)="changePageRecords({pageSize: records.value})" class="form-select">
+          <option *ngFor="let record of pageRecords"
+                  [value]="record"
+                  [selected]="data_object?.recordsPerPage === record"
+          >{{record}} records on page
+          </option>
+        </select>
+      </div>
+
+      <div class="col-sm-6 ">
+        <div>
+          <span>Page records: {{data_object?.totalRecords}}</span>
+          <br>
+          <span>Total pages: {{data_object?.maxPage}}</span>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+
+  <div class="col-sm-2">
+
+    <ul class="pagination">
+
+      <li class="page-item"
+          [ngClass]="data_object?.currentPage! === data_object?.firstPage ? 'disabled' : ''">
+        <button type="button"
+                class="page-link"
+                [disabled]="data_object?.currentPage! === data_object?.firstPage"
+                (click)="data_object?.currentPage! !== data_object?.firstPage ? changePageRecords({page: data_object?.firstPage}) : secureClick()"
+        >First
+        </button>
+      </li>
+
+      <li *ngIf="data_object?.currentPage !== data_object?.firstPage"
+          class="page-item">
+        <button type="button"
+                class="page-link"
+                (click)="changePageRecords({page: (data_object!.currentPage! - 1)})"
+        >{{data_object?.currentPage! - 1}}
+        </button>
+      </li>
+
+      <li class="page-item active">
+        <button type="button"
+                class="page-link"
+                disabled
+        >{{data_object?.currentPage}}
+        </button>
+      </li>
+
+      <li *ngIf="data_object?.currentPage !== data_object?.maxPage"
+          class="page-item">
+        <button type="button"
+                class="page-link"
+                (click)="changePageRecords({page: (data_object!.currentPage! + 1)})"
+        >{{data_object?.currentPage! + 1}}
+        </button>
+      </li>
+
+      <li class="page-item"
+          [ngClass]="data_object?.currentPage! === data_object?.maxPage ? 'disabled' : ''">
+        <button type="button"
+                class="page-link"
+                [disabled]="data_object?.currentPage === data_object?.maxPage"
+                (click)="data_object?.currentPage! !== data_object?.maxPage ? changePageRecords({page: data_object!.maxPage}) : secureClick()"
+        >Last
+        </button>
+    </ul>
+
+  </div>
+</div>
+
+
