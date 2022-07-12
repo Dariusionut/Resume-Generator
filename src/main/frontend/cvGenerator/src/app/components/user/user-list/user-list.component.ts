@@ -131,6 +131,7 @@ export class UserListComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   public filterUsers(event: any) {
+    console.log(event)
     this.params = event
     let filters = this.params;
 
