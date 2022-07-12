@@ -1,0 +1,145 @@
+<div class="mt-sm-5">
+
+  <div class="row">
+    <div class="col-sm-6">
+      <h3 *ngIf="isAddForm">{{title}} new user</h3>
+      <h3 *ngIf="!isAddForm && userById">
+        {{title}} {{userById?.userDetails?.lastName + ' ' + userById?.userDetails?.firstName}}
+      </h3>
+      <h3 *ngIf="isNewAccountForm">{{title}}</h3>
+      <h5 class="text-danger" *ngIf="errorMsg">{{errorMsg}}</h5>
+    </div>
+
+  </div>
+
+  <hr>
+  <section class="shadow-lg rounded ">
+
+    <form class="p-sm-2"
+          #userForm="ngForm"
+          (ngSubmit)="submitForm(userForm)"
+    >
+      <input *ngIf="!isAddForm" type="hidden" name="id" [ngModel]="userById?.id">
+      <div class="row mb-sm-3" ngModelGroup="userDetails">
+        <div class="col-sm-3">
+          <label for="firstName" class="form-label">First name:</label>
+          <input type="text" id="firstName"
+                 name="firstName"
+                 [ngModel]="userById?.userDetails?.firstName | titlecase"
+                 class="form-control"
+                 placeholder="First name" required minlength="3">
+        </div>
+
+        <div class="col-sm-3">
+          <label for="lastName" class="form-label">Last name:</label>
+          <input type="text" id="lastName"
+                 name="lastName"
+                 [ngModel]="userById?.userDetails?.lastName | titlecase"
+                 class="form-control"
+                 placeholder="Last name" required minlength="3">
+        </div>
+
+        <div class="col-sm-3">
+          <label for="dob" class="form-label">Date of birth:</label>
+          <input type="date" id="dob"
+                 name="dob"
+                 [ngModel]="userById?.userDetails?.dob | date: 'yyyy-MM-dd'"
+                 (ngModelChange)="validateDob(dob)"
+                 #dob="ngModel"
+                 class="form-control"
+                 placeholder="Date of birth">
+        </div>
+
+        <div class="col-sm-3" ngModelGroup="gender">
+          <label for="gender" class="form-label">Gender:</label>
+          <select id="gender"
+                  name="id"
+                  [ngModel]="userById?.userDetails?.gender?.id"
+                  class="form-select">
+            <option *ngFor="let gender of genders"
+                    [value]="gender.id"
+            >{{gender.genderName}}</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="row mb-sm-3" ngModelGroup="userSecurity">
+
+        <div class="col-sm-3">
+          <label for="username" class="form-label">Username:</label>
+          <input type="text"
+                 id="username"
+                 name="username"
+                 [ngModel]="userById?.userSecurity?.username"
+                 class="form-control"
+                 placeholder="Username">
+        </div>
+
+        <div class="col-sm-3">
+          <label for="email" class="form-label">Email:</label>
+          <input type="email"
+                 class="form-control"
+                 [email]="true"
+                 id="email"
+                 name="email"
+                 required
+                 [ngModel]="userById?.userSecurity?.email"
+                 placeholder="Email"
+                 #email="ngModel"
+                 (ngModelChange)="validateEmail(email)"
+          >
+        </div>
+
+        <div class="col-sm-3">
+          <label for="password" class="form-label">Password:</label>
+          <input type="password"
+                 id="password"
+                 name="password"
+                 [ngModel]="userById?.userSecurity?.password"
+                 class="form-control"
+                 placeholder="Password"
+                 required
+                 minlength="6"
+                 maxlength="100"
+                 #password="ngModel"
+                 (ngModelChange)="validatePassword(password)"
+          >
+        </div>
+
+        <div *ngIf="!isNewAccountForm" class="col-sm-3" ngModelGroup="role">
+          <label for="role" class="form-label">Role:</label>
+          <select id="role"
+                  name="id"
+                  [ngModel]="userRole?.id"
+                  class="form-select">
+            <option *ngFor="let role of roles" [value]="role.id">{{role.roleName}}</option>
+
+          </select>
+        </div>
+
+      </div>
+      <hr>
+
+      <div class="row">
+        <div class="col-3">
+          <button type="button"
+                  [routerLink]="isNewAccountForm ? '/login' : '/user/list'"
+                  [title]="isNewAccountForm ? 'Back to login page' : 'Back to user list'"
+                  class="btn btn-primary me-sm-2">
+            Back
+          </button>
+
+          <button type="submit"
+                  title="Save user"
+                  class="btn  btn-primary"
+                  id="saveUser">{{isNewAccountForm ? 'Create account' : 'Save'}}
+          </button>
+        </div>
+      </div>
+
+    </form>
+  </section>
+
+</div>
+
+
